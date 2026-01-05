@@ -23,21 +23,21 @@ func NewBookController() *BookController {
 func (r *BookController) Index(ctx http.Context) http.Response {
 	books, err := r.service.GetAllBook()
 	if err != nil {
-		return helpers.Error(ctx, 500, "Gagal mengambil data buku", err.Error())
+		return helpers.Error(ctx, 500, "Failed to fetch books", err.Error())
 	}
 
 	bookResponses := helpers.ToBookResponseList(books)
 
-	return helpers.Success(ctx, "Pengambilan data berhasil", bookResponses)
+	return helpers.Success(ctx, "Books retrieved successfully", bookResponses)
 }
 
 func (r *BookController) Show(ctx http.Context) http.Response {
 	book, err := r.service.GetByIDBook(ctx.Request().Input("id"))
 	if err != nil {
-		return helpers.Error(ctx, 404, "Buku tidak ditemukan", err.Error())
+		return helpers.Error(ctx, 404, "Book not found", err.Error())
 	}
 
-	return helpers.Success(ctx, "Buku berhasil diambil", helpers.ToBookResponse(book))
+	return helpers.Success(ctx, "Book retrieved successfully", helpers.ToBookResponse(book))
 }
 
 func (r *BookController) Store(ctx http.Context) http.Response {

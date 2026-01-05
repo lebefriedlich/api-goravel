@@ -60,12 +60,12 @@ func NewUserController() *UserController {
 func (r *UserController) Index(ctx http.Context) http.Response {
 	users, err := r.service.GetAllUser()
 	if err != nil {
-		return helpers.Error(ctx, 500, "Gagal mengambil data user", err.Error())
+		return helpers.Error(ctx, 500, "Failed to fetch users", err.Error())
 	}
 
 	userResponses := helpers.ToUserResponseList(users)
 
-	return helpers.Success(ctx, "Pengambilan data berhasil", userResponses)
+	return helpers.Success(ctx, "Users retrieved successfully", userResponses)
 }
 
 func (r *UserController) Register(ctx http.Context) http.Response {
