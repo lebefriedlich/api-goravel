@@ -4,11 +4,15 @@ import (
 	"errors"
 	"goravel/app/models"
 	"goravel/app/repositories"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/goravel/framework/facades"
 )
 
 type UserService interface {
+	Login(email, password string) (*models.User, string, error)
+	Logout(token string) error
 	RegisterUser(user *models.User) error
 	GetAllUser() ([]models.User, error)
 	GetByIDUser(id any) (*models.User, error)
@@ -78,4 +82,37 @@ func (s *userService) ValidateEmailUnique(email string, id int) error {
 	}
 
 	return nil
+}
+
+func (s *userService) Login(email, password string) (*models.User, string, error) {
+	user, err := s.repo.LoginUser(email, password)
+	if err != nil {
+		return nil, "", err
+	}
+
+	// Generate JWT token manually
+	jwtSecret := facades.Config().GetString("jwt.secret")
+	if jwtSecret == "" {
+		return nil, "", errors.New("JWT secret not configured")
+	}
+
+	ttl := facades.Config().GetInt("jwt.ttl", 60)
+
+	claims := jwt.MapClaims{
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Duration(ttl) * time.Minute).Unix(),
+		"iat": time.Now().Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(jwtSecret))
+	if err != nil {
+		return nil, "", err
+	}
+
+	return user, tokenString, nil
+}
+
+func (s *userService) Logout(token string) error {
+	return s.repo.Logout(token)
 }

@@ -38,7 +38,7 @@ func init() {
 		"providers": map[string]any{
 			"user": map[string]any{
 				"driver": "orm",
-				"model":  "App\\Models\\User",
+				"model":  "goravel/app/models.User",
 			},
 		},
 	})

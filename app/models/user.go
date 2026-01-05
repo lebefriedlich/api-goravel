@@ -11,3 +11,7 @@ type User struct {
 	Password string
 	Role     string `gorm:"size:20;not null;default:user"`
 }
+
+func (u *User) GetKey() any {
+	return u.ID
+}

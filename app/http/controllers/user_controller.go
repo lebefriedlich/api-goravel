@@ -20,42 +20,42 @@ func NewUserController() *UserController {
 	return &UserController{service: service}
 }
 
-// func (r *UserController) Login(ctx http.Context) http.Response {
-// 	validation, err := ctx.Request().Validate(map[string]string{
-// 		"email":    "required|string|email|max_len:255",
-// 		"password": "required|string|min_len:8",
-// 	})
+func (r *UserController) Login(ctx http.Context) http.Response {
+	validation, err := ctx.Request().Validate(map[string]string{
+		"email":    "required|string|email|max_len:255",
+		"password": "required|string|min_len:8",
+	})
 
-// 	if err != nil {
-// 		return helpers.Error(ctx, 500, "Validation setup failed", err.Error())
-// 	}
+	if err != nil {
+		return helpers.Error(ctx, 500, "Validation setup failed", err.Error())
+	}
 
-// 	if validation.Fails() {
-// 		return helpers.Error(ctx, 400, "Validation failed", validation.Errors().All())
-// 	}
+	if validation.Fails() {
+		return helpers.Error(ctx, 400, "Validation failed", validation.Errors().All())
+	}
 
-// 	email := ctx.Request().Input("email")
-// 	password := ctx.Request().Input("password")
+	email := ctx.Request().Input("email")
+	password := ctx.Request().Input("password")
 
-// 	user, token, err := r.service.Login(email, password)
-// 	if err != nil {
-// 		return helpers.Error(ctx, 401, "Login failed", err.Error())
-// 	}
+	user, token, err := r.service.Login(email, password)
+	if err != nil {
+		return helpers.Error(ctx, 401, "Login failed", err.Error())
+	}
 
-// 	return helpers.Success(ctx, "Login successful", map[string]any{
-// 		"user":  helpers.ToUserResponse(user),
-// 		"token": token,
-// 	})
-// }
+	return helpers.Success(ctx, "Login successful", map[string]any{
+		"user":  helpers.ToUserResponse(user),
+		"token": token,
+	})
+}
 
-// func (r *UserController) Logout(ctx http.Context) http.Response {
-// 	err := r.service.Logout(ctx.Request().Input("token"))
-// 	if err != nil {
-// 		return helpers.Error(ctx, 500, "Logout failed", err.Error())
-// 	}
+func (r *UserController) Logout(ctx http.Context) http.Response {
+	err := r.service.Logout(ctx.Request().Input("token"))
+	if err != nil {
+		return helpers.Error(ctx, 500, "Logout failed", err.Error())
+	}
 
-// 	return helpers.Success(ctx, "Logout successful", nil)
-// }
+	return helpers.Success(ctx, "Logout successful", nil)
+}
 
 func (r *UserController) Index(ctx http.Context) http.Response {
 	users, err := r.service.GetAllUser()
